@@ -26,15 +26,15 @@ Einige der Elemente von C++, die im Allgemeinen als unsicher gelten, wie beispie
 
 # 4. Hello World Beispiel
 
- +-------------------------------------------------+
- |using System;                                    |
- |                                                 |
- |class Program {                                  |
- |    static void Main(string[] args) {            |
- |        Console.WriteLine("Hallo Welt!");        |
- |    }                                            |
- |}                                                |
- +-------------------------------------------------+
+
+ using System;                                    
+                                                  
+ class Program {                                  
+     static void Main(string[] args) {            
+         Console.WriteLine("Hallo Welt!");        
+     }                                            
+ }                                                
+ 
 
 # Referenzen
 
