@@ -1,35 +1,41 @@
-# This is a basic workflow to help you get started with Actions
+# GitHub Action, die aus den LiaScript-Materialien des Sommersemester 2020 ein
+# Skript generiert
+name: GeneratePdf
 
-name: CI
-
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
+# Hier legen wir den Trigger für die Action fest.
+# "Wenn ein Push auf dem branch SoSe2020 realisert wird, werden die
+# nachfolgenden Schritte ausgeführt"
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    branches:
+      - SoSe2020
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
+  convert_via_pandoc:
+    runs-on: ubuntu-18.04
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2
-
-    # Runs a single command using the runners shell
-    - name: Run a one-line script
-      run: echo Hello, world!
-
-    # Runs a set of commands using the runners shell
-    - name: Run a multi-line script
-      run: |
-        echo Add other actions to build,
-        echo test, and deploy your project.
-    - name: Pandoc Document Converter
-  uses: maxheld83/pandoc-action@v2
+      - name: Check out current repository
+        uses: actions/checkout@v2
+        with:
+          ref: SoSe2020
+        # Hier ist es jetzt etwas kniffliger. Wir wollen an pandoc eine Liste
+        # alle relevanten Dateien übergeben. Dazu brauchen wir eine sogenannte
+        # Umgebungsvariable die wir FILELIST nennen. Ihr werden alle Dateinamen
+        # zugewiesen, die auf mdx enden.
+      - name: Run preprocessing and set environment variables
+        run : |
+          python3 .github/workflows/preprocessing.py
+          echo ::set-env name=FILELIST::$(ls *.mdx)
+          mkdir output
+        # Aufruf eines Standard-Docker Containers, in dem pandoc (und Latex)
+        # läuft.
+      - name: Run Pandoc for all lecture files
+        uses: docker://pandoc/latex:2.9
+        with:
+          args: -f markdown --toc --top-level-division=chapter -V geometry:margin=2cm -V linkcolor:blue --pdf-engine=xelatex --listings -H .github/workflows/listings.tex --output=output/script.pdf ${{ env.FILELIST }}
+        # Unser Skript wird in den Ordner output gespeichert und zum Download
+        # angeboten
+      - uses: actions/upload-artifact@master
+        with:
+          name: output
+          path: output
