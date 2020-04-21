@@ -1,7 +1,7 @@
 C#
 -----------------------------------------------------------------
 
-1. Einfuehrung
+1. Einführung
 
 C# ist eine typsichere, objektorientierte Allzweck-Programmiersprache. Historisch wurde in C# fast exklusiv für Windows entwickelt. Durch Xamarin ist es inzwischen aber auch möglich, für macOS, iOS und Android zu entwickeln. Zudem gibt es mit .NET Core auch offizielle Unterstützung für GNU/Linux und macOS [1].
 
